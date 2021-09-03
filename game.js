@@ -1,54 +1,78 @@
-var score=0; //global variable
 window.onload = function() {
-    $("start").onclick = startGame;
-    $("end").onmouseover = endGame(score);
-    $("game").onmouseleave = noCheat;
-    var bounderies = $$("div#game div.boundary");
-    for (var i=0; i<boundaries.length; i++){
-        boundaries[i].onmouseover=overboundaries(score);
-        boundaries[i].onmousleave = overboundaries(score);
-    }
-    document.getElementsByClassName("boundary example").innerHTML="score";
-}
 
-
-function startGame(){
-    var boundaries= document.getElementsByClassName("boundary");
-    for (var i=0; i< boundaries.length; i++){
-        boundaries[i].style.backgroundColor= "#eeeeee";
-        if (boundaries[i].style.backgroundColor!="red"){
-            document.getElementById("status").innerHTML = "Move your mouse over the 'S' to begin.";
-        }
-    }
-}
-
-
-function endGame(score){
-    var boundaries= document.getElementsByClassName("boundary");
-    for (var i=0; i<boundaries.length; i++){
-        if (boundaries[i].style.backgroundColor != "red"){
-            document.getElementById("status").innerHTML="you Win!";
-        }
-    }
-    score +=5;
-}
-
-function overBoudaries(score){
-    var boundaries= document.getElementsByClassName("boundary");
-    for (var i=0; i <boundaries.length; i++){
-       if ( boundaries[i].style.backgroundColor== "red"){
-           document.getElementById("status").innerHTML="you have lost!";
-       }
-    }
-    score -= 10;
-}
-function noCheat() {
+    document.getElementById("start").onclick = onStart;
+    document.getElementById("end").onmouseover = onEnd;
+    document.getElementById("game").onmouseleave = onCheat;
     var boundaries = document.getElementsByClassName("boundary");
+    for (var i = 0; i < boundaries.length; i++) {
+        boundaries[i].onmouseover = onBoundary;
+    }
+};
 
-    for (var i = 0; i < x.length; i++) {
-        boundaries[i].style.backgroundColor = "red";
-        if (x[i].style.backgroundColor == "red") {
-            var s = document.getElementById("status").innerHTML = "No Cheating...";
+var score = 0;
+var game_run = false;
+
+function onStart() {
+    game_run = true;
+    var boundaries = document.getElementsByClassName("boundary");
+    for (var i = 0; i < boundaries.length; i++) {
+        if (boundaries[i].style.backgroundColor != "#eeeeee") {
+            boundaries[i].style.backgroundColor = "#eeeeee";
+            boundaries[i].onmouseover = onBoundary;
         }
     }
+    document.getElementById("game").onmouseleave = onCheat;
+    document.getElementById("status").innerHTML = "Move your mouse over the 'S' to begin." + " " + score;
+}
+
+function onBoundary() {
+    var boundaries = document.getElementsByClassName("boundary");
+    if (game_run) {
+        for (var i = 0; i < boundaries.length; i++) {
+            boundaries[i].style.backgroundColor = "red";
+        }
+        score -= 10;
+        document.getElementById("status").innerHTML = "You Lost!" + " " + score;
+        game_run = false;
+    } else {
+        for (var i = 0; i < boundaries.length; i++) {
+            boundaries[i].onmouseover = null;
+        }
+    }
+}
+
+function onEnd() {
+    var boundaries = document.getElementsByClassName("boundary");
+    if (game_run) {
+        for (var i = 0; i < boundaries.length; i++) {
+            boundaries[i].style.backgroundColor = "green";
+        }
+        score += 5;
+        document.getElementById("status").innerHTML = "You Won!" + " " + score;
+        game_run = false;
+    } else {
+        for (var i = 0; i < boundaries.length; i++) {
+            boundaries[i].onmouseover = null;
+        }
+        document.getElementById("game").onmouseleave = null;
+    }
+
+}
+
+function onCheat() {
+    var boundaries = document.getElementsByClassName("boundary");
+    if (game_run) {
+        for (var i = 0; i < boundaries.length; i++) {
+            boundaries[i].style.backgroundColor = "red";
+        }
+        score -= 10;
+        document.getElementById("status").innerHTML = "Nice Try...!!!" + " " + score;
+        game_run = false;
+    } else {
+        for (var i = 0; i < boundaries.length; i++) {
+            boundaries[i].onmouseover = null;
+        }
+        document.getElementById("game").onmouseleave = null;
+    }
+
 }
